@@ -11,7 +11,7 @@
   background-color: transparent;
   border-radius: 100px;
   font-weight: 600;
-  color: #999D9E;
+  color: #212121;
   box-shadow: 0 0 0 2px #ffffff;
   cursor: pointer;
   overflow: hidden;
@@ -42,7 +42,7 @@
   transform: translate(-50%, -50%);
   width: 20px;
   height: 20px;
-  background-color: #c5e5e4;
+  background-color: #455CE9;
   border-radius: 50%;
   opacity: 0;
   transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
@@ -64,7 +64,7 @@
 
 .animated-button:hover {
   box-shadow: 0 0 0 12px transparent;
-  color: #212121;
+  color:#fff ;
   border-radius: 12px;
 }
 
@@ -81,7 +81,7 @@
 }
 
 .animated-button:hover svg {
-  fill: #1f387e;
+  fill: #fff;
 }
 
 .animated-button:active {

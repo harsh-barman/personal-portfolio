@@ -4,12 +4,17 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [showHamburger, setShowHamburger] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const scrollThreshold = viewportHeight * 0.3; // 60vh
 
       setIsScrolled(currentScrollY > 50);
+      setShowHamburger(currentScrollY > scrollThreshold);
 
       if (currentScrollY > lastScrollY) {
         setHidden(true);
@@ -23,6 +28,10 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
   return (
     <>
@@ -47,7 +56,7 @@ const Navbar = () => {
           </a>
 
           {/* Desktop buttons */}
-          <div className="hidden md:flex gap-12">
+          <div className={`hidden md:flex gap-12 transition-opacity duration-300 ${showHamburger ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
             <a 
               href="/projects" 
               className="relative text-white text-2xl no-underline transition-colors duration-300 ease-in-out hover:animate-pulse
@@ -102,6 +111,108 @@ const Navbar = () => {
           </div>
         </div>  
       </nav>
+
+      {/* Hamburger Button */}
+      <button
+        onClick={toggleMenu}
+        className={`fixed top-8 right-8 z-[4000] w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
+          showHamburger ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20 pointer-events-none'
+        } ${menuOpen ? 'bg-indigo-500' : 'bg-gray-800'}`}
+        aria-label="Toggle menu"
+      >
+        {!menuOpen ? (
+          <div className="flex flex-col gap-1.5">
+            <span className="w-6 h-0.5 bg-white"></span>
+            <span className="w-6 h-0.5 bg-white"></span>
+            <span className="w-6 h-0.5 bg-white"></span>
+          </div>
+        ) : (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        )}
+      </button>
+
+      {/* Overlay - only shows when menu is open */}
+      <div
+        className={`fixed inset-0 bg-black transition-opacity duration-500 z-[3400] ${
+          menuOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={toggleMenu}
+      />
+
+      {/* 30% Width Slide Menu */}
+      <div
+        className={`fixed top-0 right-0 h-full md:w-[30%] w-[65%] z-[3500] bg-gray-900 transition-transform duration-500 ease-in-out ${
+          menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="flex flex-col h-full px-8 pt-32">
+          {/* Navigation Title */}
+          <div className="mb-8">
+            <p className="text-gray-400 text-xs tracking-widest uppercase">Navigation</p>
+            <div className="w-full h-px bg-gray-700 mt-6"></div>
+          </div>
+
+          {/* Menu Items */}
+          <nav className="flex flex-col gap-4">
+            <a
+              href="/"
+              className="text-white text-4xl font-light hover:text-indigo-400 transition-colors duration-300 pl-8"
+              onClick={toggleMenu}
+            >
+              Home
+            </a>
+            <a
+              href="/projects"
+              className="text-white text-4xl font-light hover:text-indigo-400 transition-colors duration-300 pl-8"
+              onClick={toggleMenu}
+            >
+              Projects
+            </a>
+            <a
+              href="/about"
+              className="text-white text-4xl font-light hover:text-indigo-400 transition-colors duration-300 pl-8"
+              onClick={toggleMenu}
+            >
+              About
+            </a>
+            <a
+              href="#"
+              className="text-white text-4xl font-light hover:text-indigo-400 transition-colors duration-300 pl-8"
+              onClick={toggleMenu}
+            >
+              Contact
+            </a>
+          </nav>
+
+          {/* Socials */}
+          <div className="mt-auto mb-12">
+            <p className="text-gray-400 text-xs tracking-widest uppercase mb-4">Socials</p>
+            <div className="flex flex-col gap-3 text-white text-sm">
+              
+              <a 
+                href="https://github.com/harsh-barman" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-indigo-400 transition-colors duration-300"
+              >
+                GitHub
+              </a>
+
+              <a 
+                href="https://www.linkedin.com/in/harsh-08-barman/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-indigo-400 transition-colors duration-300"
+              >
+                LinkedIn
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
 
       <style jsx>{`
         @keyframes shake {

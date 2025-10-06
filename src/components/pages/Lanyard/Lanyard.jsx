@@ -2,7 +2,7 @@ import React from 'react';
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
+import { useGLTF, useTexture, Environment, Lightformer, Text } from '@react-three/drei';
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 
@@ -16,7 +16,7 @@ extend({ MeshLineGeometry, MeshLineMaterial });
 
 export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], fov = 20, transparent = true }) {
   return (
-    <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
+    <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center bg-[#999D9E]">
       <Canvas
         camera={{ position: position, fov: fov }}
         gl={{ alpha: transparent }}
@@ -57,12 +57,13 @@ export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], 
           />
         </Environment>
       </Canvas>
-      <div className='font-medium' style={{ fontFamily: '"Boldonse", system-ui' }}>
+      <div className=''>
         {/* Resume Button */}
         <a
         //   href={Harshbarman}  i have to import the rsume
         //   download="HarshBarman_Resume.pdf"
-        className="fixed left-0 top-1/2 -translate-y-1/2 flex items-center justify-between bg-[#1f1f1f] px-5 py-3 rounded-r-[50px] no-underline w-[290px] h-[100px] transition-all duration-300 ease-in-out origin-left hover:bg-[#222] hover:scale-105 hover:-translate-y-1/2"
+        className="fixed left-0 md:top-1/2 md:-translate-y-1/2 flex items-center justify-between bg-[#1f1f1f] px-5 py-3 md:rounded-r-[50px]
+         rounded-[50px] no-underline w-[290px] md:w-[330] h-[100px] bottom-5 transition-all duration-300 ease-in-out origin-left hover:bg-[#222] hover:scale-105 hover:-translate-y-1/2 ml-3 md:-ml-10 pl-0 md:pl-9"
         >
         <span className="ml-5 text-[30px] text-white font-medium">
             Resume
@@ -76,9 +77,10 @@ export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], 
             />
         </span>
         </a>
-        <div className="fixed right-[0px] top-1/2 -translate-y-1/2 flex flex-col items-start z-[1000] text-white text-[2.5rem] gap-6">
-          <GoArrowDownRight className="resume-heading-icon text-[3rem]" />
-          <h2 > Developer & Designer</h2>
+        <div className="fixed right-[80px]  bottom-30 md:top-1/2 md:-translate-y-1/2 flex flex-col  md:items-start  text-white  
+              text-[clamp(2rem,10vw,2.4rem)] md:gap-6 pl-12 md:pl-0">
+          <GoArrowDownRight className="resume-heading-icon text-[clamp(2rem,10vw,2.5rem)]" />
+          <h2 > Designer & Developer</h2>
         </div>
       </div>
     </div>
@@ -104,6 +106,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   );
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true);
   const [isSmall, setIsSmall] = useState(() => typeof window !== 'undefined' && window.innerWidth < 1024);
 
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 2]);
@@ -111,7 +114,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1]);
   useSphericalJoint(j3, card, [
     [0, 0, 0],
-    [0, 2.2, 0]
+    [0, 1.8, 0]
   ]);
 
   useEffect(() => {
@@ -175,18 +178,17 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
         <RigidBody position={[3, 0, 0]} ref={j3} {...segmentProps}>
           <BallCollider args={[0.1]} />
         </RigidBody>
-        <RigidBody position={[5, 0, 0]} ref={card} {...segmentProps} type={dragged ? 'kinematicPosition' : 'dynamic'}>
+        <RigidBody position={[3, 0, 0]} ref={card} {...segmentProps} type={dragged ? 'kinematicPosition' : 'dynamic'}>
           <CuboidCollider args={[1.2, 1.7, 0.01]} />
           <group
             scale={3}
             position={[0, -1.8, -0.05]}
-            onPointerOver={() => hover(true)}
-            onPointerOut={() => hover(false)}
-            onPointerUp={e => (e.target.releasePointerCapture(e.pointerId), drag(false))}
-            onPointerDown={e => (
+            onPointerOver={() =>{ hover(true),  setShowTooltip(true);}}
+            onPointerOut={() => {hover(false) , setShowTooltip(false);}}
+            onPointerUp={e => {e.target.releasePointerCapture(e.pointerId), drag(false) ,setShowTooltip(true);}}
+            onPointerDown={e => {
               e.target.setPointerCapture(e.pointerId),
-              drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())))
-            )}
+              drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))), setShowTooltip(false);}}
           >
             <mesh geometry={nodes.card.geometry}>
               <meshPhysicalMaterial
@@ -201,6 +203,33 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
           </group>
+            {/* Tooltip Text */}
+          {hovered && !dragged && (
+            <>
+              {/* Background box */}
+              <mesh position={[0, -2.4, -0.01]}>
+                <planeGeometry args={[2.2, 0.6]} />
+                <meshBasicMaterial color="#27272a" opacity={0.95} transparent />
+              </mesh>
+              
+              {/* Small triangle pointer above the box */}
+              <mesh position={[0, -2.1, 0]} rotation={[0, 0, Math.PI / 4]}>
+                <planeGeometry args={[0.12, 0.12]} />
+                <meshBasicMaterial color="#27272a" opacity={0.95} transparent />
+              </mesh>
+              
+              {/* Text */}
+              <Text
+                position={[0, -2.4, 0]}
+                fontSize={0.25}
+                color="#d4d4d8"
+                anchorX="center"
+                anchorY="middle"
+              >
+                Hold & Drag
+              </Text>
+            </>
+          )}
         </RigidBody>
       </group>
       <mesh ref={band}>
