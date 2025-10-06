@@ -10,6 +10,7 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import cardGLB from '../../../assets/lanyard/card.glb';
 import lanyard from '../../../assets/lanyard/lanyard.png';
 import { GoArrowDownRight } from "react-icons/go";
+import Harshbarman from '../../../assets/Harshbarman.pdf'
 import * as THREE from 'three';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
@@ -60,8 +61,8 @@ export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], 
       <div className=''>
         {/* Resume Button */}
         <a
-        //   href={Harshbarman}  i have to import the rsume
-        //   download="HarshBarman_Resume.pdf"
+          href={Harshbarman}  
+          download="HarshBarman_Resume.pdf"
         className="fixed left-0 md:top-1/2 md:-translate-y-1/2 flex items-center justify-between bg-[#1f1f1f] px-5 py-3 md:rounded-r-[50px]
          rounded-[50px] no-underline w-[290px] md:w-[330] h-[100px] bottom-5 transition-all duration-300 ease-in-out origin-left hover:bg-[#222] hover:scale-105 hover:-translate-y-1/2 ml-3 md:-ml-10 pl-0 md:pl-9"
         >
