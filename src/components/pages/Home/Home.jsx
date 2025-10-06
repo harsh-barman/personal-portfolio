@@ -1,12 +1,19 @@
 import React from 'react'
 import Lanyard from '../Lanyard/Lanyard'
 import HeroText from '../HeroText/HeroText'
+import Contact from '../../Layout/Footer/footer'
 
 export default function Home() {
   return (
-    <div className='bg-black'>
+    <div className=''>
+      <div>
+        
         <Lanyard/>
-        <HeroText className='mt-[10rem]' />
+        <HeroText  />
+      </div>
+       <footer id="contact"  className="footer">
+        <Contact />
+      </footer>
     </div>
 
   )

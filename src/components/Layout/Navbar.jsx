@@ -92,7 +92,7 @@ const Navbar = () => {
               About
             </a>
             <a 
-              href="#" 
+              href="/#contact" 
               className="relative text-white text-2xl no-underline transition-colors duration-300 ease-in-out hover:animate-pulse
                 after:content-[''] after:absolute after:left-1/2 after:-bottom-3.5 after:w-1.5 after:h-1.5 
                 after:bg-white after:rounded-full after:-translate-x-1/2 after:scale-0 after:transition-transform after:duration-300
@@ -178,7 +178,7 @@ const Navbar = () => {
               About
             </a>
             <a
-              href="#"
+              href="/#contact"
               className="text-white text-4xl font-light hover:text-indigo-400 transition-colors duration-300 pl-8"
               onClick={toggleMenu}
             >
