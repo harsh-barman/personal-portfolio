@@ -3,23 +3,29 @@ import { SitemapStream, streamToPromise } from 'sitemap';
 import { createWriteStream } from 'fs';
 import { routes } from './src/routes.js';
 
-const siteUrl = 'https://harsh-barman2.vercel.app'; // ← your live site URL
+const siteUrl = 'https://harsh-barman2.vercel.app';
 
 async function generateSitemap() {
   const stream = new SitemapStream({ hostname: siteUrl });
   const writeStream = createWriteStream('./public/sitemap.xml');
 
+  // Pipe the stream first
+  stream.pipe(writeStream);
+
+  // Write all routes
   routes.forEach((route) => {
     stream.write({
       url: route,
       changefreq: 'monthly',
-      priority: route === '/' ? 1.0 : 0.8
+      priority: route === '/' ? 1.0 : 0.8,
     });
   });
 
   stream.end();
+
+  // Wait until the stream finishes writing
   await streamToPromise(stream);
-  stream.pipe(writeStream);
+
   console.log('✅ Sitemap generated successfully!');
 }
 
